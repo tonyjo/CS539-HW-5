@@ -1,0 +1,7 @@
+(let [p 0.01
+      dist (flip p)
+      until-success (fn [p n]
+                      (if (sample dist)
+                        n
+                        (until-success p (+ n 1))))]
+  (until-success p 0))
