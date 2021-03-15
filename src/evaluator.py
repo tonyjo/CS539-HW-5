@@ -11,14 +11,15 @@ from primitives import _totensor
 def standard_env():
     "An environment with some Scheme standard procedures."
     # env = pmap(penv)
-    # env = penv.update({'alpha' : ''})
-    penv.update({'alpha' : ''})
+    # env = env.update({'alpha' : []})
+    # return env
 
+    penv.update({'alpha' : []})
     return penv
 
 global_env = standard_env()
 
-def evaluate(exp, sig={}, env=None): #TODO: add sigma, or something
+def evaluate(exp, sig={}, env=global_env):
     if env is None:
         env = standard_env()
     # variable reference
@@ -40,7 +41,12 @@ def evaluate(exp, sig={}, env=None): #TODO: add sigma, or something
     if addr[0] == 'push-address':
         addr_op, *addr_args = addr
         proc, _ = evaluate(exp=addr_op, sig=sig, env=env)
-        eval_addr = proc(*addr_args)
+        alpha_key, addr_ = addr_args
+        alpha = env[alpha_key]
+        eval_addr = proc(alpha, [addr_])
+        # update env
+        env.update({alpha_key: eval_addr})
+
     # definition
     if op == 'fn':
         (parms, body) = args
@@ -101,6 +107,8 @@ def run_deterministic_tests():
         except:
             raise AssertionError('return value {} is not equal to truth {} for exp {}'.format(ret,truth,exp))
         print('FOPPL Tests passed')
+
+        global_env.update({'alpha' : []})
 
     # for i in range(1,13):
     #     # # Note: this path should be with respect to the daphne path!
