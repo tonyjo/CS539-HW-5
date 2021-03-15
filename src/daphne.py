@@ -1,10 +1,11 @@
 import json
 import subprocess
 
-def daphne(args, cwd='../HW2/daphne'):
-    proc = subprocess.run(['/Users/berendz/bin/lein','run'] + args,
+daphne_path = '/home/tonyjo/Documents/prob-prog/CS539-HW-5/daphne'
+
+def daphne(args, cwd=daphne_path):
+    proc = subprocess.run(['lein','run','-f','json'] + args,
                           capture_output=True, cwd=cwd)
     if(proc.returncode != 0):
         raise Exception(proc.stdout.decode() + proc.stderr.decode())
     return json.loads(proc.stdout)
-
