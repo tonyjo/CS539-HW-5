@@ -60,7 +60,7 @@ def _hashmap(*x):
     return return_x
 
 def _totensor(*x):
-    dtype=torch.float32
+    dtype=torch.float32 # Hard coding to float for now
     if not torch.is_tensor(x):
         if isinstance(x, list):
             x = torch.tensor(x, dtype=dtype)
