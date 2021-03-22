@@ -1,4 +1,6 @@
 import json
+import math
+import time
 import torch
 from daphne import daphne
 from pyrsistent import pmap, plist
@@ -7,7 +9,10 @@ from tests import is_tol, run_prob_test, load_truth
 # Global env
 from primitives import env as penv
 from primitives import _totensor
-
+import sys
+sys.setrecursionlimit(8000)
+# VIZ
+import matplotlib.pyplot as plt
 
 class Env(dict):
     "An environment: a dict of {'var': val} pairs, with an outer Env."
@@ -156,51 +161,51 @@ def get_stream(exp):
 
 
 def run_deterministic_tests():
-    # for i in range(1,14):
-    # #for i in range(13,14):
-    #     # # Note: this path should be with respect to the daphne path!
-    #     # ast = daphne(['desugar-hoppl', '-i', f'{program_path}/src/programs/tests/deterministic/test_{i}.daphne'])
-    #     # ast_path = f'./jsons/tests/deterministic/{i}.json'
-    #     # with open(ast_path, 'w') as fout:
-    #     #     json.dump(ast, fout, indent=2)
-    #     # print('\n\n\nSample of posterior of program {}:'.format(i))
-    #
-    #     print('\nDeterministic program {}:'.format(i))
-    #     ast_path = f'./jsons/tests/deterministic/{i}.json'
-    #     with open(ast_path) as json_file:
-    #         exp = json.load(json_file)
-    #     # print(exp)
-    #
-    #     ret, sig = evaluate(exp=exp)
-    #     truth = load_truth(f'{program_path}/src/programs/tests/deterministic/test_{i}.truth')
-    #     print('Output: ', ret)
-    #     print('Truth:', truth)
-    #     try:
-    #         assert(is_tol(ret, truth))
-    #         print('HOPPL Test passed!')
-    #     except:
-    #         print('return value {} is not equal to truth {} for exp {}'.format(ret,truth,exp))
+    #for i in range(13,14):
+    for i in range(1,14):
+        # # Note: this path should be with respect to the daphne path!
+        # ast = daphne(['desugar-hoppl', '-i', f'{program_path}/src/programs/tests/deterministic/test_{i}.daphne'])
+        # ast_path = f'./jsons/tests/deterministic/{i}.json'
+        # with open(ast_path, 'w') as fout:
+        #     json.dump(ast, fout, indent=2)
+        # print('\n\n\nSample of posterior of program {}:'.format(i))
+
+        print('\nDeterministic program {}:'.format(i))
+        ast_path = f'./jsons/tests/deterministic/{i}.json'
+        with open(ast_path) as json_file:
+            exp = json.load(json_file)
+        # print(exp)
+
+        ret, sig = evaluate(exp=exp)
+        truth = load_truth(f'{program_path}/src/programs/tests/deterministic/test_{i}.truth')
+        print('Output: ', ret)
+        print('Truth:', truth)
+        try:
+            assert(is_tol(ret, truth))
+            print('HOPPL Test passed!')
+        except:
+            print('return value {} is not equal to truth {} for exp {}'.format(ret,truth,exp))
 
     #for i in range(5,6):
     for i in range(1,13):
-    #     # Note: this path should be with respect to the daphne path!
-    #     ast = daphne(['desugar-hoppl', '-i', f'{program_path}/src/programs/tests/hoppl-deterministic/test_{i}.daphne'])
-    #     ast_path = f'./jsons/tests/hoppl-deterministic/{i}.json'
-    #     with open(ast_path, 'w') as fout:
-    #         json.dump(ast, fout, indent=2)
-    #     print('\n\n\nSample of posterior of program {}:'.format(i))
+        # # Note: this path should be with respect to the daphne path!
+        # ast = daphne(['desugar-hoppl', '-i', f'{program_path}/src/programs/tests/hoppl-deterministic/test_{i}.daphne'])
+        # ast_path = f'./jsons/tests/hoppl-deterministic/{i}.json'
+        # with open(ast_path, 'w') as fout:
+        #     json.dump(ast, fout, indent=2)
+        # print('\n\n\nSample of posterior of program {}:'.format(i))
 
         print('\nHOPPL deterministic  {}:'.format(i))
         ast_path = f'./jsons/tests/hoppl-deterministic/{i}.json'
         with open(ast_path) as json_file:
             exp = json.load(json_file)
-        #print(exp)
+        # print(exp)
 
         ret, sig = evaluate(exp=exp)
         truth = load_truth(f'{program_path}/src/programs/tests/hoppl-deterministic/test_{i}.truth')
         try:
             print('Output: ', ret)
-            print('Truth:', truth)
+            print('Truth :', truth)
             assert(is_tol(ret, truth))
             print('Test passed')
         except:
@@ -212,8 +217,8 @@ def run_probabilistic_tests():
     num_samples=1e4
     max_p_value = 1e-2
 
-    #for i in range(1,7):
-    for i in range(4,5):
+    for i in range(1,7):
+    #for i in range(4,5):
         # # Note: this path should be with respect to the daphne path!
         # ast = daphne(['desugar-hoppl', '-i', f'{program_path}/src/programs/tests/probabilistic/test_{i}.daphne'])
         # ast_path = f'./jsons/tests/probabilistic/{i}.json'
@@ -221,6 +226,7 @@ def run_probabilistic_tests():
         #     json.dump(ast, fout, indent=2)
         # print('\n\n\nSample of prior of program {}:'.format(i))
 
+        print('\nHOPPL probabilistic  Test {}:'.format(i))
         ast_path = f'./jsons/tests/probabilistic/{i}.json'
         with open(ast_path) as json_file:
             ast = json.load(json_file)
@@ -242,10 +248,10 @@ def run_probabilistic_tests():
 if __name__ == '__main__':
     program_path = '/home/tonyjo/Documents/prob-prog/CS539-HW-5'
 
-    #run_deterministic_tests()
-    #run_probabilistic_tests()
+    # run_deterministic_tests()
+    # run_probabilistic_tests()
 
-    #for i in range(3,4):
+    #for i in range(2,3):
     for i in range(1,4):
         # # Note: this path should be with respect to the daphne path!
         # ast = daphne(['desugar-hoppl', '-i', f'{program_path}/src/programs/{i}.daphne'])
@@ -253,10 +259,172 @@ if __name__ == '__main__':
         # with open(ast_path, 'w') as fout:
         #     json.dump(ast, fout, indent=2)
         # print('\n\n\nSample of prior of program {}:'.format(i))
+        # 1
+        if i == 1:
+            print('Running HOPPL Evaluation for Task number {}:'.format(str(i)))
+            ast_path = f'./jsons/{i}.json'
+            with open(ast_path) as json_file:
+                ast = json.load(json_file)
 
-        ast_path = f'./jsons/{i}.json'
-        with open(ast_path) as json_file:
-            ast = json.load(json_file)
+            samples = 25000
+            evals = []
+            begin = time.time()
+            for idx in range(samples):
+                try:
+                    ret, sig = evaluate(exp=ast)
+                except:
+                    continue
+                evals.append([ret, torch.tensor([0.0])])
+                if idx%1000 == 0:
+                    print(f'Progress: {idx}/{samples}')
+            end = time.time()
 
-        ret, sig = evaluate(exp=ast)
-        print(ret)
+            # Mean:
+            W_k = 0.0
+            for k in range(samples):
+                r_l, W_l = evals[k]
+                W_l = W_l.item()
+                W_k += math.exp(W_l)
+
+            EX = 0.0
+            for l in range(samples):
+                r_l, W_l = evals[l]
+                r_l = r_l.item()
+                W_l = W_l.item()
+                W_l = math.exp(W_l)
+                EX += ((W_l/W_k) * r_l)
+            print("Posterior Mean: ", EX)
+            print("--------------------------------")
+            print("\n")
+
+            EX2 = 0.0
+            for l in range(samples):
+                r_l, W_l = evals[l]
+                r_l = r_l.item()
+                W_l = W_l.item()
+                W_l = math.exp(W_l)
+                EX2 += ((W_l/W_k) * (r_l**2))
+            var = EX2 - (EX**2)
+            print("Posterior Variance:", var)
+            print("--------------------------------")
+            print("\n")
+
+            hours, rem = divmod(end-begin, 3600)
+            minutes, seconds = divmod(rem, 60)
+            print("Wall-clock Runtime (HR:MIN): ")
+            print("{:0>2}:{:0>2}".format(int(hours),int(minutes)))
+            print("--------------------------------")
+            print("\n")
+
+            plt.hist([r[0].item() for r in evals])
+            plt.savefig(f'plots/P_{i}.png')
+            plt.clf()
+        #-----------------------------------------------------------------------
+        # 2
+        elif i == 2:
+            print('Running HOPPL Evaluation for Task number {}:'.format(str(i)))
+            ast_path = f'./jsons/{i}.json'
+            with open(ast_path) as json_file:
+                ast = json.load(json_file)
+            # ret, sig = evaluate(exp=ast)
+            # print(ret)
+
+            samples = 25000
+            evals = []
+            begin = time.time()
+            for idx in range(samples):
+                try:
+                    ret, sig = evaluate(exp=ast)
+                except:
+                    continue
+                evals.append([ret, torch.tensor([0.0])])
+                if idx%1000 == 0:
+                    print(f'Progress: {idx}/{samples}')
+            end = time.time()
+
+            # Mean:
+            W_k = 0.0
+            for k in range(samples):
+                r_l, W_l = evals[k]
+                W_l = W_l.item()
+                W_k += math.exp(W_l)
+
+            EX = 0.0
+            for l in range(samples):
+                r_l, W_l = evals[l]
+                r_l = r_l.item()
+                W_l = W_l.item()
+                W_l = math.exp(W_l)
+                EX += ((W_l/W_k) * r_l)
+            print("Posterior Mean: ", EX)
+            print("--------------------------------")
+            print("\n")
+
+            EX2 = 0.0
+            for l in range(samples):
+                r_l, W_l = evals[l]
+                r_l = r_l.item()
+                W_l = W_l.item()
+                W_l = math.exp(W_l)
+                EX2 += ((W_l/W_k) * (r_l**2))
+            var = EX2 - (EX**2)
+            print("Posterior Variance:", var)
+            print("--------------------------------")
+            print("\n")
+
+            hours, rem = divmod(end-begin, 3600)
+            minutes, seconds = divmod(rem, 60)
+            print("Wall-clock Runtime (HR:MIN): ")
+            print("{:0>2}:{:0>2}".format(int(hours),int(minutes)))
+            print("--------------------------------")
+            print("\n")
+
+            plt.hist([r[0].item() for r in evals])
+            plt.savefig(f'plots/P_{i}.png')
+            plt.clf()
+        #-----------------------------------------------------------------------
+        # 3
+        elif i == 3:
+            print('Running HOPPL Evaluation for Task number {}:'.format(str(i)))
+            ast_path = f'./jsons/{i}.json'
+            with open(ast_path) as json_file:
+                ast = json.load(json_file)
+            ret, sig = evaluate(exp=ast)
+
+            T = 25000
+            samples = []
+            stream  = get_stream(ast)
+            begin = time.time()
+            for k in range(T):
+                if k == 0:
+                    samples, sig  = next(stream)
+                    samples = samples.unsqueeze(0)
+                    # print(samples.shape)
+                else:
+                    sample, sig   = next(stream)
+                    sample  = sample.unsqueeze(0)
+                    samples = torch.cat((samples, sample), dim=0)
+                if k%1000 == 0:
+                    print(f'Progress: {k}/{T}')
+            end = time.time()
+            # print(samples)
+            print("Posterior Mean: \n", torch.mean(samples, dim=0))
+            print("\n")
+
+            var = torch.var(samples, dim=0, unbiased=True)
+            print("Posterior Variance: \n", var)
+            print("--------------------------------")
+            print("\n")
+
+            hours, rem = divmod(end-begin, 3600)
+            minutes, seconds = divmod(rem, 60)
+            print("Wall-clock Runtime (HR:MIN): ")
+            print("{:0>2}:{:0>2}".format(int(hours),int(minutes)))
+            print("--------------------------------")
+            print("\n")
+
+            fig, axs = plt.subplots(3,6)
+            png = [axs[i//6,i%6].hist([a[i] for a in samples]) for i in range(17)]
+            plt.tight_layout()
+            plt.savefig(f'plots/P_3.png')
+        #-----------------------------------------------------------------------

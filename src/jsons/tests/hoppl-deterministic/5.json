@@ -65,12 +65,13 @@
               "addr2"
             ],
             [
-              1,
+              "+",
               [
                 "push-address",
                 "alpha",
                 "addr6"
               ],
+              1,
               [
                 "get",
                 [

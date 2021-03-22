@@ -50,42 +50,35 @@
               ],
               "n",
               2
-            ]
-          ],
-          [
+            ],
             1,
             [
-              "push-address",
-              "alpha",
-              "addr4"
-            ]
-          ],
-          [
-            "*",
-            [
-              "push-address",
-              "alpha",
-              "addr5"
-            ],
-            "n",
-            [
-              "fac",
+              "*",
               [
                 "push-address",
                 "alpha",
-                "addr6"
+                "addr4"
               ],
+              "n",
               [
-                "-",
+                "fac",
                 [
                   "push-address",
                   "alpha",
-                  "addr7"
+                  "addr5"
                 ],
-                "n",
-                1
-              ],
-              "fac"
+                [
+                  "-",
+                  [
+                    "push-address",
+                    "alpha",
+                    "addr6"
+                  ],
+                  "n",
+                  1
+                ],
+                "fac"
+              ]
             ]
           ]
         ],
@@ -109,46 +102,39 @@
               [
                 "push-address",
                 "alpha",
-                "addr8"
+                "addr7"
               ],
               "n",
               2
-            ]
-          ],
-          [
+            ],
             1,
             [
-              "push-address",
-              "alpha",
-              "addr9"
-            ]
-          ],
-          [
-            "*",
-            [
-              "push-address",
-              "alpha",
-              "addr10"
-            ],
-            "n",
-            [
-              "fac",
+              "*",
               [
                 "push-address",
                 "alpha",
-                "addr11"
+                "addr8"
               ],
+              "n",
               [
-                "-",
+                "fac",
                 [
                   "push-address",
                   "alpha",
-                  "addr12"
+                  "addr9"
                 ],
-                "n",
-                1
-              ],
-              "fac"
+                [
+                  "-",
+                  [
+                    "push-address",
+                    "alpha",
+                    "addr10"
+                  ],
+                  "n",
+                  1
+                ],
+                "fac"
+              ]
             ]
           ]
         ]

@@ -113,7 +113,6 @@ def _put(addr, x, idx_or_key, value):
                 x_[idx_or_key] = value
         except:
             raise IndexError('Index {} is not present in the list'.format(idx_or_key))
-
         return x_
     else:
          raise AssertionError('Unsupported data structure')
@@ -140,7 +139,6 @@ def _remove(addr, x, idx_or_key):
             x = torch.cat((x[:idx_or_key], x[(idx_or_key+1):]))
         except:
             raise IndexError('Index {} is not present in the tensor'.format(idx_or_key))
-
         return x
     else:
          raise AssertionError('Unsupported data structure')
@@ -161,11 +159,14 @@ def _append(addr, x, value):
         if x.dtype != value.dtype:
             value = value.type(x.dtype)
         try:
-            if len(x.size()) > 1 and (not(x.shape[0] == 1 and x.shape[1] == 1)):
-                x = torch.squeeze(x)
-            elif len(x.size()) > 1 and (x.shape[0] == 1 and x.shape[1] == 1):
-                x = torch.squeeze(x, dim=1)
-            x = torch.cat((x, value))
+            if list(x.shape) == [1, 0] or list(x.shape) == [0, 1]:
+                return value
+            else:
+                if len(x.size()) > 1 and (not(x.shape[0] == 1 and x.shape[1] == 1)):
+                    x = torch.squeeze(x)
+                elif len(x.size()) > 1 and (x.shape[0] == 1 and x.shape[1] == 1):
+                    x = torch.squeeze(x, dim=1)
+                x = torch.cat((x, value))
         except Exception as e:
             print(x.dtype)
             print(value.dtype)
@@ -218,34 +219,54 @@ def _first(addr, x):
     if isinstance(x, list):
         return x[0]
     elif torch.is_tensor(x):
-        if len(x.size()) > 1 and (not(x.shape[0] == 1 and x.shape[1] == 1)):
-            x = torch.squeeze(x)
-        return x[0]
+        if list(x.shape) == [1, 0] or list(x.shape) == [0, 1]:
+            return x
+        else:
+            if len(x.size()) > 1 and (not(x.shape[0] == 1 and x.shape[1] == 1)):
+                x = torch.squeeze(x)
+            elif len(x.size()) > 1 and (x.shape[0] == 1 and x.shape[1] == 1):
+                x = torch.squeeze(x, dim=1)
+            return x[0]
 
 def _second(addr, x):
     if isinstance(x, list):
         return x[1]
     elif torch.is_tensor(x):
-        if len(x.size()) > 1 and (not(x.shape[0] == 1 and x.shape[1] == 1)):
-            x = torch.squeeze(x)
-        return x[1]
+        if list(x.shape) == [1, 0] or list(x.shape) == [0, 1]:
+            return x
+        else:
+            if len(x.size()) > 1 and (not(x.shape[0] == 1 and x.shape[1] == 1)):
+                x = torch.squeeze(x)
+            elif len(x.size()) > 1 and (x.shape[0] == 1 and x.shape[1] == 1):
+                x = torch.squeeze(x, dim=1)
+            return x[1]
 
 def _last(addr, x):
     #import pdb; pdb.set_trace()
     if isinstance(x, list):
         return x[-1]
     elif torch.is_tensor(x):
-        if len(x.size()) > 1 and (not(x.shape[0] == 1 and x.shape[1] == 1)):
-            x = torch.squeeze(x)
-        return x[-1]
+        if list(x.shape) == [1, 0] or list(x.shape) == [0, 1]:
+            return x
+        else:
+            if len(x.size()) > 1 and (not(x.shape[0] == 1 and x.shape[1] == 1)):
+                x = torch.squeeze(x)
+            elif len(x.size()) > 1 and (x.shape[0] == 1 and x.shape[1] == 1):
+                x = torch.squeeze(x, dim=1)
+            return x[-1]
 
 def _rest(addr, x):
     if isinstance(x, list):
         return x[1:]
     elif torch.is_tensor(x):
-        if len(x.size()) > 1 and (not(x.shape[0] == 1 and x.shape[1] == 1)):
-            x = torch.squeeze(x)
-        return x[1:]
+        if list(x.shape) == [1, 0] or list(x.shape) == [0, 1]:
+            return x
+        else:
+            if len(x.size()) > 1 and (not(x.shape[0] == 1 and x.shape[1] == 1)):
+                x = torch.squeeze(x)
+            elif len(x.size()) > 1 and (x.shape[0] == 1 and x.shape[1] == 1):
+                x = torch.squeeze(x, dim=1)
+            return x[1:]
 
 def _lessthan(addr, a, b):
     return torch.Tensor([a < b])
@@ -298,27 +319,43 @@ def _beroulli(addr, probs):
 def _empty(addr, x):
     return torch.Tensor([len(x) == 0])
 
-def _cons(addr, x1, x2):
-    if not torch.is_tensor(x1):
-        if isinstance(x1, list):
-            x1 = torch.tensor(x1, dtype=x.dtype)
+def _cons(addr, x, seq):
+    if isinstance(x, list):
+        if isinstance(seq, list):
+            x.extend(seq)
         else:
-            x1 = torch.tensor([x1], dtype=x.dtype)
-    if not torch.is_tensor(x2):
-        if isinstance(x2, list):
-            x2 = torch.tensor(x2, dtype=x.dtype)
-        else:
-            x2 = torch.tensor([x2], dtype=x.dtype)
-    try:
-        if len(x1.size()) > 1:
-            x1 = torch.squeeze(x1)
-        if len(x2.size()) > 1:
-            x2 = torch.squeeze(x2)
-        value = torch.cat((x1, x2))
-    except:
-        raise AssertionError('Cannot append the torch tensors')
+            # single value
+            x.append(seq)
+    elif torch.is_tensor(x):
+        if not torch.is_tensor(seq):
+            if isinstance(seq, list):
+                seq = torch.tensor(seq, dtype=x.dtype)
+            else:
+                seq = torch.tensor([seq], dtype=x.dtype)
+        if x.dtype != seq.dtype:
+            seq = seq.type(x.dtype)
+        try:
+            if len(seq.size()) > 1 and (not(seq.shape[0] == 1 and seq.shape[1] == 1)):
+                seq = torch.squeeze(seq)
+            elif len(seq.size()) > 1 and (seq.shape[0] == 1 and seq.shape[1] == 1):
+                seq = torch.squeeze(seq, dim=1)
+            if list(x.shape) == [1, 0] or list(x.shape) == [0, 1]:
+                x = deepcopy(seq)
+            else:
+                if len(x.size()) > 1 and (not(x.shape[0] == 1 and x.shape[1] == 1)):
+                    x = torch.squeeze(x)
+                elif len(x.size()) > 1 and (x.shape[0] == 1 and x.shape[1] == 1):
+                    x = torch.squeeze(x, dim=1)
+                # Concat
+                x = torch.cat((seq, x))
+        except Exception as e:
+            print(x.size(), x.dtype)
+            print(seq.size(), seq.dtype)
+            raise AssertionError('Cannot cons the torch tensors, due to: ', str(e))
 
-    return value
+        return x
+    else:
+        raise AssertionError('Unsupported data structure')
 
 def push_addr(alpha, value):
     return alpha + value
