@@ -26,7 +26,6 @@ class Env(dict):
             return self.new_env[var]
         else:
             return self.outer.find(var)
-        # return self.new_env[var] if (var in self.new_env) else self.outer.find(var)
 
 
 def standard_env():
