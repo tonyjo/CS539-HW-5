@@ -20,13 +20,6 @@ class Env(dict):
         self.new_env = pmap({p:a for p, a in zip(parms, args)})
         self.new_env = self.new_env.update({'alpha':''})
         self.outer   = outer
-    def does_exist(self, var):
-        if var in self.new_env:
-            return True
-        elif self.outer is None:
-            return False
-        else:
-            return self.outer.does_exist(var=var)
     def find(self, var):
         "Find the innermost Env where var appears."
         if (var in self.new_env):
@@ -60,7 +53,7 @@ def eval(exp, sig, env):
         print('Exp: ', exp)
 
     # variable reference
-    if isinstance(exp, str): #and (env.does_exist(var=exp)):
+    if isinstance(exp, str):
         #import pdb; pdb.set_trace()
         try:
             env_func = env.find(exp)
@@ -71,7 +64,7 @@ def eval(exp, sig, env):
             return exp, sig
 
     # constant
-    if not isinstance(exp, list): #and (not env.does_exist(var=exp)):
+    if not isinstance(exp, list):
         if isinstance(exp, int) or isinstance(exp, float):
             exp = _totensor(exp)
         return exp, sig
